@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TyCodEv - ScreenRec Pro</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231f6feb'><path d='M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z'/></svg>">
+  <link rel="stylesheet" href="css/style.css">
+ 
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🎥 TyCodEv - ScreenRec Pro</h1>
+      <p>Grabador de pantalla profesional con funciones avanzadas</p>
+    </div>
+
+    <div class="main-content">
+      <!-- Configuraciones -->
+      <div class="controls-section">
+        <h3 style="margin-top: 0; color: #495057;">⚙️ Configuraciones de Grabación</h3>
+        
+        <div class="controls-grid">
+          <div class="control-group">
+            <label for="qualitySelect">Calidad de Video</label>
+            <select id="qualitySelect">
+              <option value="high">Alta (1080p)</option>
+              <option value="medium" selected>Media (720p)</option>
+              <option value="low">Baja (480p)</option>
+            </select>
+          </div>
+          
+          <div class="control-group">
+            <label for="fpsSelect">Frames por Segundo</label>
+            <select id="fpsSelect">
+              <option value="60">60 FPS</option>
+              <option value="30" selected>30 FPS</option>
+              <option value="24">24 FPS</option>
+            </select>
+          </div>
+          
+          <div class="control-group">
+            <label for="formatSelect">Formato de Salida</label>
+            <select id="formatSelect">
+              <option value="webm" selected>WebM (Recomendado)</option>
+              <option value="mp4">MP4</option>
+            </select>
+          </div>
+          
+          <div class="control-group">
+            <label for="audioQuality">Calidad de Audio</label>
+            <select id="audioQuality">
+              <option value="high">Alta (192kbps)</option>
+              <option value="medium" selected>Media (128kbps)</option>
+              <option value="low">Baja (64kbps)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 30px; flex-wrap: wrap; margin-top: 20px;">
+          <div class="checkbox-group">
+            <input type="checkbox" id="withCam">
+            <label for="withCam">📹 Incluir cámara (overlay)</label>
+          </div>
+          <div class="checkbox-group">
+            <input type="checkbox" id="withMic" checked>
+            <label for="withMic">🎤 Incluir micrófono</label>
+          </div>
+          <div class="checkbox-group">
+            <input type="checkbox" id="systemAudio">
+            <label for="systemAudio">🔊 Audio del sistema</label>
+          </div>
+          <div class="checkbox-group">
+            <input type="checkbox" id="cursorHighlight">
+            <label for="cursorHighlight">🖱️ Resaltar cursor</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timer y Estado -->
+      <div class="timer-display">
+        <div id="timer">00:00:00</div>
+        <div style="font-size: 0.8rem; opacity: 0.8; margin-top: 5px;" id="fileSize">Tamaño: 0 MB</div>
+      </div>
+
+      <!-- Controles de Grabación -->
+      <div class="button-group">
+        <button id="startBtn" class="primary">
+          <span>▶️</span> Iniciar Grabación
+        </button>
+        <button id="pauseBtn" class="secondary" disabled>
+          <span>⏸️</span> Pausar
+        </button>
+        <button id="resumeBtn" class="secondary" disabled>
+          <span>▶️</span> Reanudar
+        </button>
+        <button id="stopBtn" class="danger" disabled>
+          <span>⏹️</span> Detener
+        </button>
+        <button id="markBtn" class="secondary" disabled>
+          <span>📍</span> Marcar
+        </button>
+      </div>
+
+      <!-- Barra de Estado -->
+      <div class="status-bar">
+        <div class="status-indicator" id="statusIndicator"></div>
+        <span id="status">Listo para grabar</span>
+      </div>
+
+      <!-- Video Preview -->
+      <div class="video-container">
+        <video id="preview" playsinline></video>
+      </div>
+
+      <!-- Marcadores -->
+      <div id="markersSection" class="hidden" style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
+        <h4 style="margin-top: 0; color: #495057;">📍 Marcadores de Tiempo</h4>
+        <div id="markersList"></div>
+      </div>
+
+      <!-- Historial de Grabaciones -->
+      <div class="history-section">
+        <div class="history-header">
+          <h3 style="margin: 0; color: #495057;">📚 Historial de Grabaciones</h3>
+          <button id="clearHistoryBtn" class="secondary" style="padding: 8px 16px; font-size: 0.9rem;">
+            🗑️ Limpiar Historial
+          </button>
+        </div>
+        <div id="historyList" class="history-list">
+          <div class="history-empty">
+            <p>No hay grabaciones en el historial</p>
+            <small>Las grabaciones se guardarán automáticamente aquí</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div class="download-section">
+        <a id="downloadLink" class="download-link hidden">
+          📥 Descargar Video
+        </a>
+        <div id="fileInfo" class="file-info hidden"></div>
+      </div>
+      
+      <div class="keyboard-shortcuts">
+        <strong>Atajos:</strong>
+        <kbd>Espacio</kbd> Iniciar/Pausar |
+        <kbd>Ctrl+Shift+R</kbd> Detener |
+        <kbd>M</kbd> Marcar
+      </div>
+    </div>
+  </div>
+
+  <!-- Brand Footer -->
+<footer class="brand-footer" aria-label="TyCodEv footer">
+    <div class="brand-footer__inner">
+      <div class="brand-footer__brand">
+        <img src="img/logo.png" alt="TyCodEv Logo" class="brand-footer__logo-img">
+        <span class="brand-footer__name">TyCodEv-ScreenRec Pro</span>
+        <span class="brand-footer__divider">·</span>
+        <span class="brand-footer__product">Realizado por: @TyCodEv</span>
+        <span class="brand-footer__divider">·</span>
+        <span class="brand-footer__year" id="year"></span>
+      </div>
+      <nav class="social-links" aria-label="Redes sociales">
+        <a href="https://www.youtube.com/" target="_blank" rel="noopener" aria-label="YouTube">YouTube</a>
+        <a href="https://www.tiktok.com/" target="_blank" rel="noopener" aria-label="TikTok">TikTok</a>
+        <a href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">Instagram</a>
+        <a href="https://www.facebook.com/" target="_blank" rel="noopener" aria-label="Facebook">Facebook</a>
+        <a href="https://github.com/" target="_blank" rel="noopener" aria-label="GitHub">GitHub</a>
+      </nav>
+    </div>
+  </footer>
+  
+  <script>
+    // Insertar el año actual automáticamente
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>  
+
+<script src="js/script.js"></script>
+</body>
+</html>
